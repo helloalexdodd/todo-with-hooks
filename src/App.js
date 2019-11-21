@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function Todo({ todo, i, completeTodo, removeTodo }) {
@@ -71,6 +71,26 @@ function App() {
     const newTodos = [...todos];
     newTodos.splice(i, 1);
     setTodos(newTodos);
+  };
+  
+  const [data, setData] = useState();
+
+  // Call our fetch function below once the component mounts
+  useEffect(() => {
+    callBackendAPI()
+      .then(res => setData(res.express))
+      .catch(err => console.log(err));
+  });
+  
+  // Fetches our GET route from the Express server. (Note the route we are fetching matches the GET route from server.js
+  const callBackendAPI = async () => {
+    const response = await fetch('/express_backend');
+    const body = await response.json();
+    
+    if (response.status !== 200) {
+      throw Error(body.message) 
+    }
+    return body;
   };
   
   return (
